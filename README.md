@@ -7,7 +7,7 @@ UnoCSS preset quickstart template.
 
 ## Usage
 ```shell
-pnpm i -D unocss-preset-starter unocss
+pnpm i -D unocss-preset-dynamic unocss
 ```
 
 ```ts
@@ -25,4 +25,4 @@ export default defineConfig({
 
 ## License
 
-[MIT](./LICENSE) License © 2023 [zyyv](https://github.com/zyyv)
+[MIT](./LICENSE) License © 2023 [pangxie231](https://github.com/pangxie231)
