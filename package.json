@@ -1,24 +1,23 @@
 {
-  "name": "unocss-preset-starter",
+  "name": "unocss-preset-dynamic",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@10.6.2",
   "description": "<description>",
-  "author": "unpreset <https://github.com/unpreset>",
+  "author": "pangxie231",
   "license": "MIT",
-  "homepage": "https://github.com/unpreset/unocss-preset-starter#readme",
+  "homepage": "https://github.com/pangxie231/unocss-preset-starter#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unpreset/unocss-preset-starter.git"
+    "url": "git+https://github.com/pangxie231/unocss-preset-starter.git"
   },
   "bugs": {
-    "url": "https://github.com/unpreset/unocss-preset-starter/issues"
+    "url": "https://github.com/pangxie231/unocss-preset-starter/issues"
   },
   "keywords": [
     "unocss",
-    "unpreset",
     "unocss-preset",
-    "unocss-preset-starter"
+    "unocss-preset-dynamic"
   ],
   "sideEffects": false,
   "exports": {
@@ -66,6 +65,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "bumpp": "^10.0.3",
     "eslint": "^9.22.0",
+    "image-size": "^2.0.1",
     "typescript": "5.6.3",
     "unbuild": "^3.5.0",
     "unocss": "^66.0.0",

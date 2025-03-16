@@ -1,16 +1,26 @@
 import { definePreset } from '@unocss/core'
-
+import path from 'path'
+import fs from 'fs'
+import sizeOf from 'image-size'
 export interface StarterOptions {
-  /**
-   *  The number of columns in the grid system (Example option)
-   *
-   * @default 12
-   */
-  span?: number
+  alias?: {[k:string]: string}
+}
+
+const getImageAsUint8Array = (imgPath: string): Uint8Array => {
+  // 解析图片路径
+  const resolvedPath = path.resolve(__dirname, imgPath)
+
+  // 读取图片文件内容并转换为 Uint8Array
+  const buffer = fs.readFileSync(resolvedPath)
+
+  // 将 Buffer 转换为 Uint8Array
+  const uint8Array = new Uint8Array(buffer)
+
+  return uint8Array
 }
 
 export const presetStarter = definePreset((_options: StarterOptions = {}) => {
-  const span = _options.span ?? 12
+  const { alias = {} } = _options
 
   return {
     name: 'unocss-preset-starter',
@@ -23,35 +33,37 @@ export const presetStarter = definePreset((_options: StarterOptions = {}) => {
     rules: [
       [
         /^bg-dynamic-(.+)$/,
-        (...args) => {
-          // console.log('args', args)
-          return {
-            'background-image': 'url(@/assets/images)'
+        ([_, imgPath]) => {
+          let imgPath2: string = ''
+          Object.entries(alias).some(([k, v])=> {
+            if(imgPath.startsWith(k)) {
+              imgPath2 = path.resolve(imgPath.replace(k,v))
+              return true
+            }
+          })
+           
+          const unit8 = getImageAsUint8Array(imgPath2)
+          try {
+            const { width, height } = sizeOf(unit8)
+            return {
+              width: `${width}px`,
+              height: `${height}px`,
+              'background-image': `url(${imgPath})`,
+              'background-size': `${width}px ${height}px`
+            }
+          } catch (error) {
+            console.error(`Failed to process image: ${imgPath2}`, error);
+            return {}
           }
+
         },
 
-      ],
-      [
-        /col-(\d+)/,
-        ([_, s]) => ({ width: `calc(${s} / ${span} * 100%)` }),
-        { autocomplete: 'col-<span>',  },
       ],
     ],
 
     // Customize your variants here
     variants: [
-      {
-        name: '@active',
-        match(matcher) {
-          if (!matcher.startsWith('@active'))
-            return matcher
-
-          return {
-            matcher: matcher.slice(8),
-            selector: s => `${s}.active`,
-          }
-        },
-      },
+      // ...
     ],
 
     // You can also define built-in presets
@@ -66,10 +78,7 @@ export const presetStarter = definePreset((_options: StarterOptions = {}) => {
 
     // Customize AutoComplete
     autocomplete: {
-      shorthands: {
-        span: Array.from({ length: span }, (_, i) => `${i + 1}`),
-        // 'bg-auto': Array.from({ length: span }, (_, i) => `${i + 1}`),
-      },
+      // ...
     },
   }
 })
