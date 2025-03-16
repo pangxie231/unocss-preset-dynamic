@@ -1,4 +1,4 @@
-# unocss-preset-starter [![npm](https://www.npmjs.com/package/unocss-preset-dynamic)](https://npmjs.com/package/unocss-preset-starter)
+# unocss-preset-starter [![npm](https://img.shields.io/npm/v/unocss-preset-starter)](https://www.npmjs.com/package/unocss-preset-dynamic)
 
 UnoCSS preset quickstart template.
 
