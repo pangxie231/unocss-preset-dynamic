@@ -21,11 +21,20 @@ export const presetStarter = definePreset((_options: StarterOptions = {}) => {
 
     // Customize your preset here
     rules: [
-      ['custom-rule', { color: 'red' }],
+      [
+        /^bg-dynamic-(.+)$/,
+        (...args) => {
+          // console.log('args', args)
+          return {
+            'background-image': 'url(@/assets/images)'
+          }
+        },
+
+      ],
       [
         /col-(\d+)/,
         ([_, s]) => ({ width: `calc(${s} / ${span} * 100%)` }),
-        { autocomplete: 'col-<span>' },
+        { autocomplete: 'col-<span>',  },
       ],
     ],
 
@@ -59,6 +68,7 @@ export const presetStarter = definePreset((_options: StarterOptions = {}) => {
     autocomplete: {
       shorthands: {
         span: Array.from({ length: span }, (_, i) => `${i + 1}`),
+        // 'bg-auto': Array.from({ length: span }, (_, i) => `${i + 1}`),
       },
     },
   }

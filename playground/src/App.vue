@@ -13,6 +13,7 @@
       <div class="bg-blue-3 text-center col-5">
         Col 5
       </div>
+      <div bg="@/assets/dog.jpg"></div>
     </div>
   </div>
 </template>
