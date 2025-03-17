@@ -54,7 +54,8 @@
     "deploy": "vite build playground"
   },
   "dependencies": {
-    "@unocss/core": "^66.0.0"
+    "@unocss/core": "^66.0.0",
+    "image-size": "^2.0.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.8.1",
@@ -65,7 +66,6 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "bumpp": "^10.0.3",
     "eslint": "^9.22.0",
-    "image-size": "^2.0.1",
     "typescript": "5.6.3",
     "unbuild": "^3.5.0",
     "unocss": "^66.0.0",
