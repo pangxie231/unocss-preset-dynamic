@@ -21,7 +21,7 @@ import { aliases } from './playground/vite.config'
 export default defineConfig({
   presets: [
     // @ts-ignore
-    presetStarter({
+    presetDynamic({
       // 为了识别vite中配置的别名
       // 最好传入该属性
       alias: aliases,

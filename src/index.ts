@@ -2,7 +2,8 @@ import { definePreset } from '@unocss/core'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
-import sizeOf from 'image-size'
+import { imageSize } from 'image-size'
+import { readFile } from 'node:fs/promises'
 export interface StarterOptions {
   alias?: {[k:string]: string}
 }
@@ -12,26 +13,10 @@ export interface DynamicAttributes {
   'bg-dynamic'?: string
 }
 
-const getImageAsUint8Array = (imgPath: string): Uint8Array => {
-  // 解析图片路径
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const resolvedPath = path.resolve(__dirname, imgPath)
-
-  // 读取图片文件内容并转换为 Uint8Array
-  const buffer = fs.readFileSync(resolvedPath)
-
-  // 将 Buffer 转换为 Uint8Array
-  const uint8Array = new Uint8Array(buffer)
-
-  return uint8Array
-}
-
 export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
-  const { alias = {} } = _options
 
   return {
-    name: 'unocss-preset-starter',
+    name: 'unocss-preset-dynamic',
 
     theme: {
       // Customize your theme here
@@ -41,29 +26,24 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
     rules: [
       [
         /^bg-dynamic-(.+)$/,
-        ([_, imgPath]) => {
-          let imgPath2: string = ''
-          Object.entries(alias).some(([k, v])=> {
-            if(imgPath.startsWith(k)) {
-              imgPath2 = path.resolve(imgPath.replace(k,v))
-              return true
-            }
-          })
-           
-          const unit8 = getImageAsUint8Array(imgPath2)
-          try {
-            const { width, height } = sizeOf(unit8)
-            return {
-              width: `${width}px`,
-              height: `${height}px`,
-              'background-image': `url(${imgPath})`,
-              'background-size': `${width}px ${height}px`
-            }
-          } catch (error) {
-            console.error(`Failed to process image: ${imgPath2}`, error);
-            return {}
+        async([_, imgPath]) => {
+         
+        let imgPath2: string = ''
+        Object.entries(_options.alias || {}).some(([k, v])=> {
+          if(imgPath.startsWith(k)) {
+            imgPath2 = path.resolve(imgPath.replace(k,v))
+            return true
           }
+        })
 
+        const buffer = await readFile(imgPath2)
+          const { width, height } = imageSize(buffer)
+          return {
+            width: `${width}px`,
+            height: `${height}px`,
+            'background-image': `url(${imgPath})`,
+            'background-size': `${width}px ${height}px`
+          }
         },
 
       ],

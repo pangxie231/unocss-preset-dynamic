@@ -6,7 +6,7 @@ export default defineBuildConfig({
   ],
   clean: true,
   declaration: true,
-  externals: ['unocss'],
+  externals: ['unocss', 'path', 'fs', 'url', 'node:fs/promises', 'image-size'],
   rollup: {
     emitCJS: true,
   },

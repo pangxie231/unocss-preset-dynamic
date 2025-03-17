@@ -1,6 +1,6 @@
 import { createGenerator } from 'unocss'
 import { expect, it } from 'vitest'
-import { presetStarter } from '../src'
+import { presetDynamic } from '../src'
 
 // it('presetStarter', async () => {
 //   const uno = await createGenerator({
