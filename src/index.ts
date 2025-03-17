@@ -1,7 +1,5 @@
 import { definePreset } from '@unocss/core'
 import path from 'path'
-import fs from 'fs'
-import { fileURLToPath } from 'url'
 import { imageSize } from 'image-size'
 import { readFile } from 'node:fs/promises'
 export interface StarterOptions {
