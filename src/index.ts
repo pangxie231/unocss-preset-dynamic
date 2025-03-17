@@ -1,27 +1,44 @@
 import { definePreset } from '@unocss/core'
 import path from 'path'
 import fs from "fs";
-import { fileURLToPath } from 'url'
 import { imageSize } from 'image-size'
-import { readFile } from 'node:fs/promises'
 import { existsSync, readFileSync } from 'node:fs';
 export interface StarterOptions {
   alias?: {[k:string]: string}
 }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-console.log('🚀 ~ __dirname:', __dirname)
+
+function findAssetsDirDown(dir: string): string | null {
+  // 检查当前目录下是否存在 "assets" 文件夹
+  const candidate = path.join(dir, 'assets');
+  if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
+    return candidate;
+  }
+  
+  // 读取当前目录下的所有条目，过滤掉 "node_modules"
+  const entries = fs.readdirSync(dir);
+  for (const entry of entries) {
+    if (entry === 'node_modules') continue; // 忽略 node_modules
+    const fullPath = path.join(dir, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      const found = findAssetsDirDown(fullPath);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+const assetsDir = findAssetsDirDown(process.cwd());
 
 const imageSizes = new Map();
-// const imgDir = path.resolve(__dirname, "./images");
 
-// const buffer = await readFile(imgPath2)
-// const { width, height } = imageSize(buffer)
-const files = fs.readdirSync(path.resolve(__dirname, '../playground/src/assets'))
+
+const files = fs.readdirSync(assetsDir!)
 for(const file of files) {
-  const filePath = path.join(path.resolve(__dirname, '../playground/src/assets'), file)
+  const filePath = path.join(assetsDir!, file)
   
   if(existsSync(filePath)) {
     const buffer = readFileSync(filePath)
