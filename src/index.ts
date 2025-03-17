@@ -1,13 +1,21 @@
 import { definePreset } from '@unocss/core'
 import path from 'path'
 import fs from 'fs'
+import { fileURLToPath } from 'url'
 import sizeOf from 'image-size'
 export interface StarterOptions {
   alias?: {[k:string]: string}
 }
 
+// 扩展类型
+export interface DynamicAttributes {
+  'bg-dynamic'?: string
+}
+
 const getImageAsUint8Array = (imgPath: string): Uint8Array => {
   // 解析图片路径
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   const resolvedPath = path.resolve(__dirname, imgPath)
 
   // 读取图片文件内容并转换为 Uint8Array
@@ -19,7 +27,7 @@ const getImageAsUint8Array = (imgPath: string): Uint8Array => {
   return uint8Array
 }
 
-export const presetStarter = definePreset((_options: StarterOptions = {}) => {
+export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
   const { alias = {} } = _options
 
   return {

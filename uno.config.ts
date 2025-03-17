@@ -1,5 +1,5 @@
 import { defineConfig, presetUno, presetAttributify } from 'unocss'
-import { presetStarter } from './src'
+import { presetDynamic } from './src'
 import { aliases } from './playground/vite.config'
 
 // Just for Vscode Extension
@@ -7,7 +7,7 @@ import { aliases } from './playground/vite.config'
 export default defineConfig({
   presets: [
     presetUno(),
-    presetStarter({
+    presetDynamic({
       // @ts-ignore
       alias: aliases
     }),
