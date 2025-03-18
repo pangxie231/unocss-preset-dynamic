@@ -58,7 +58,7 @@ if (!isVSCode) {
   const assetsDir = findAssetsDirDown(process.cwd());
   const imgs = findAllImg(assetsDir!, [])
 
-  console.log('🚀 ~ imgs:', imgs)
+  // console.log('🚀 ~ imgs:', imgs)
 
   for (const filePath of imgs) {
     if (filePath && existsSync(filePath)) {
@@ -68,7 +68,7 @@ if (!isVSCode) {
   }
 }
 
-console.log("🚀 ~ imageSizes:", imageSizes)
+// console.log("🚀 ~ imageSizes:", imageSizes)
 
 
 // 扩展类型
@@ -96,7 +96,6 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
         /^(bg|size)-dynamic-(.+)$/,
         (...args) => {
 
-          // console.log('🚀 ~ presetDynamic ~ imgPath:', args)
           const [fullMatch, _, imgPath] = args[0]
 
 
@@ -125,6 +124,7 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
               }
             }
           } else {
+            console.log('🚀 ~ presetDynamic ~ imgPath2:', imgPath2)
             const { width, height } = imageSizes.get(imgPath2)
             if (isBgDynamic) {
               return {
@@ -139,6 +139,8 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
                 height: `${height}px`,
               }
             }
+
+
           }
         },
 
