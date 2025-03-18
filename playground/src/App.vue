@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex" bg-dynamic="@/assets/imgs/dog.jpg"></div>
-    <img size-dynamic="@/assets/imgs/dog.jpg" src="@/assets/imgs/dog.jpg" alt="">
+    <!-- <img size-dynamic="@/assets/imgs/dog2.jpg" src="@/assets/imgs/dog.jpg" alt=""> -->
   </div>
 
 

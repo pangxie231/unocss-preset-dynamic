@@ -1,7 +1,6 @@
 import { definePreset } from '@unocss/core'
-import path from 'path'
 import { imageSize } from 'image-size'
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 export interface StarterOptions {
   alias?: { [k: string]: string }
 }
@@ -16,63 +15,60 @@ const isVSCode = isNode && !!process.env.VSCODE_CWD
 
 
 
-function findAssetsDirDown(dir: string): string | null {
-  // 检查当前目录下是否存在 "assets" 文件夹
-  const candidate = path.join(dir, 'assets');
-  if (existsSync(candidate) && statSync(candidate).isDirectory()) {
-    return candidate;
-  }
-  // 读取当前目录下的所有条目，过滤掉 "node_modules"
-  const entries = readdirSync(dir);
-  for (const entry of entries) {
-    if (entry === 'node_modules') continue; // 忽略 node_modules
-    const fullPath = path.join(dir, entry);
-    if (statSync(fullPath).isDirectory()) {
-      const found = findAssetsDirDown(fullPath);
-      if (found) return found;
-    }
-  }
-  return null;
-}
-const imageSizes = new Map();
+// function findAssetsDirDown(dir: string): string | null {
+//   // 检查当前目录下是否存在 "assets" 文件夹
+//   const candidate = path.join(dir, 'assets');
+//   if (existsSync(candidate) && statSync(candidate).isDirectory()) {
+//     return candidate;
+//   }
+//   // 读取当前目录下的所有条目，过滤掉 "node_modules"
+//   const entries = readdirSync(dir);
+//   for (const entry of entries) {
+//     if (entry === 'node_modules') continue; // 忽略 node_modules
+//     const fullPath = path.join(dir, entry);
+//     if (statSync(fullPath).isDirectory()) {
+//       const found = findAssetsDirDown(fullPath);
+//       if (found) return found;
+//     }
+//   }
+//   return null;
+// }
+// const imageSizes = new Map();
 
-// 递归assets，找到所有的 .png
-function findAllImg(dir: string, imgs: string[]) {
+// // 递归assets，找到所有的 .png
+// function findAllImg(dir: string, imgs: string[]) {
 
-  if (dir && statSync(dir).isDirectory()) {
-    const files = readdirSync(dir)
-    for (const file of files) {
-      if (statSync(path.join(dir, file)).isDirectory()) {
-        findAllImg(path.join(dir, file), imgs)
-      } else {
-        // console.log('🚀 ~ findAllImg ~ path.extname(file):', path.extname(file))
-        if(/\.(jpg|png|gif)$/.test(file)) {
-          imgs.push(path.join(dir, file))
-        }
-      }
+//   if (dir && statSync(dir).isDirectory()) {
+//     const files = readdirSync(dir)
+//     for (const file of files) {
+//       if (statSync(path.join(dir, file)).isDirectory()) {
+//         findAllImg(path.join(dir, file), imgs)
+//       } else {
+//         // console.log('🚀 ~ findAllImg ~ path.extname(file):', path.extname(file))
+//         if (/\.(jpg|png|gif)$/.test(file)) {
+//           imgs.push(path.join(dir, file))
+//         }
+//       }
 
-    }
-  }
+//     }
+//   }
 
-  return imgs
-}
+//   return imgs
+// }
 
-if (!isVSCode) {
-  const assetsDir = findAssetsDirDown(process.cwd());
-  const imgs = findAllImg(assetsDir!, [])
+// if (!isVSCode) {
+//   const assetsDir = findAssetsDirDown(process.cwd());
+//   const imgs = findAllImg(assetsDir!, [])
 
-  // console.log('🚀 ~ imgs:', imgs)
+//   // console.log('🚀 ~ imgs:', imgs)
 
-  for (const filePath of imgs) {
-    if (filePath && existsSync(filePath)) {
-      const buffer = readFileSync(filePath)
-      imageSizes.set(filePath.replace(/\\/g, '/'), imageSize(buffer))
-    }
-  }
-}
-
-// console.log("🚀 ~ imageSizes:", imageSizes)
-
+//   for (const filePath of imgs) {
+//     if (filePath && existsSync(filePath)) {
+//       const buffer = readFileSync(filePath)
+//       imageSizes.set(filePath.replace(/\\/g, '/'), imageSize(buffer))
+//     }
+//   }
+// }
 
 // 扩展类型
 export interface DynamicAttributes {
@@ -98,18 +94,7 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
       [
         /^(bg|size)-dynamic-(.+)$/,
         (...args) => {
-
           const [fullMatch, _, imgPath] = args[0]
-
-
-          let imgPath2: string = ''
-          Object.entries(_options.alias || {}).some(([k, v]) => {
-            if (imgPath.startsWith(k)) {
-              imgPath2 = imgPath.replace(k, v).replace(/\\/g, '/')
-              return true
-            }
-          })
-
           const isBgDynamic = bgDynamicRE.test(fullMatch)
           const isSizeDynamic = sizeDynamicRE.test(fullMatch)
           if (isVSCode) {
@@ -126,9 +111,18 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
                 height: '[dynamic-height]px',
               }
             }
-          } else {
-            console.log('🚀 ~ presetDynamic ~ imgPath2:', imgPath2)
-            const { width, height } = imageSizes.get(imgPath2)
+          }
+
+          let imgPath2: string = ''
+          Object.entries(_options.alias || {}).some(([k, v]) => {
+            if (imgPath.startsWith(k)) {
+              imgPath2 = imgPath.replace(k, v)
+              return true
+            }
+          })
+          if(imgPath2 && existsSync(imgPath2)) {
+            const buffer = readFileSync(imgPath2)
+            const { width, height } = imageSize(buffer)
             if (isBgDynamic) {
               return {
                 width: `${width}px`,
@@ -142,8 +136,8 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
                 height: `${height}px`,
               }
             }
-
-
+          } else {
+            console.error('未找到图片路径', imgPath2)
           }
         },
 
