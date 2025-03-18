@@ -114,7 +114,7 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
                 'background-image': `url(${imgPath})`,
                 'background-size': `${width}px ${height}px`
               }
-            } else if (sizeDynamicRe) {
+            } else if (isSizeDynamic) {
               return {
                 width: `${width}px`,
                 height: `${height}px`,
