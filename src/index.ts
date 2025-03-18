@@ -1,6 +1,6 @@
 import { definePreset } from '@unocss/core'
 import { imageSize } from 'image-size'
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 export interface StarterOptions {
   alias?: { [k: string]: string }
 }
