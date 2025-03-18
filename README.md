@@ -17,6 +17,11 @@ npm i -D unocss-preset-dynamic
 import { defineConfig, presetAttributify } from 'unocss'
 import { presetDynamic } from 'unocss-preset-dynamic'
 import { aliases } from './playground/vite.config'
+import { fileURLToPath } from 'url'
+import path from 'path'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   presets: [
@@ -24,44 +29,16 @@ export default defineConfig({
     presetDynamic({
       // 为了识别vite中配置的别名
       // 最好传入该属性
-      alias: aliases,
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
     }),
     presetAttributify()
   ],
 })
 ```
 
-```ts
-// vite.config.ts
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import UnoCSS from 'unocss/vite'
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// 导出给unocss-preset-dynamic使用
-export const aliases = {
-  '@': path.resolve(__dirname, 'src')
-}
-// https://vite.dev/config/
-export default defineConfig({
-  test: {
-    environment: 'jsdom',
-  },
-  plugins: [
-    vue(), 
-    UnoCSS(),
-  ],
-  resolve: {
-    alias: aliases
-  },
-})
-```
-如果需要获得良好的代码提示，还需要检查是否配置了tsconfig.json(jsconfig.json)
+检查是否配置了tsconfig.json(jsconfig.json)
 
 ```json
 // tsconfig.json 
@@ -77,7 +54,7 @@ export default defineConfig({
 }
 ```
 
-如果需要获得良好的代码提示,还需要添加类型扩展文件
+添加类型扩展文件
 在src下新建global.d.ts
 
 ```ts
@@ -90,6 +67,14 @@ declare module '@vue/runtime-dom' {
   }
 }
 ```
+
+- bg-dynamic 预览
+
+![alt text](image.png)
+
+- size-dynamic 预览
+
+![alt text](image-1.png)
 
 
 ## License

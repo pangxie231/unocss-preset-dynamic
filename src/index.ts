@@ -60,7 +60,7 @@ const isNode = typeof process !== 'undefined' && process.stdout && !process.vers
 const isVSCode = isNode && !!process.env.VSCODE_CWD
 
 const bgDynamicRE = /^bg-dynamic-(.+)$/
-const sizeDynamicRe = /^size-dynamic-(.+)$/
+const sizeDynamicRE = /^size-dynamic-(.+)$/
 
 export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
 
@@ -90,7 +90,7 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
           })
 
           const isBgDynamic = bgDynamicRE.test(fullMatch)
-          const isSizeDynamic = bgDynamicRE.test(fullMatch)
+          const isSizeDynamic = sizeDynamicRE.test(fullMatch)
           if (isVSCode) {
             if (isBgDynamic) {
               return {
