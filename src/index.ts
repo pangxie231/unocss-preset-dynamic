@@ -41,12 +41,13 @@ if(assetsDir && statSync(assetsDir!).isDirectory()) {
   for(const file of files) {
     const filePath = path.join(assetsDir!, file)
     
-    if(existsSync(filePath)) {
+    if(filePath && existsSync(filePath)) {
       const buffer = readFileSync(filePath)
       imageSizes.set(filePath.replace(/\\/g, '/'), imageSize(buffer))
     }
   }
 }
+console.log("🚀 ~ imageSizes:", imageSizes)
 
 
 // 扩展类型
@@ -66,8 +67,9 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
     // Customize your preset here
     rules: [
       [
-        /^bg-dynamic-(.+)$/,
+        /^(bg-dynamic|src)-(.+)$/,
         ([_, imgPath]) => {
+         console.log("🚀 ~ presetDynamic ~ imgPath:", imgPath)
          
         let imgPath2: string = ''
         Object.entries(_options.alias || {}).some(([k, v])=> {

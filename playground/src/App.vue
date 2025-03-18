@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="flex" flex="auto"></div>
+    <div class="flex" bg-dynamic="@/assets/dog.jpg"></div>
+    <img class="flex" bg-dynamic="@/assets/dog.jpg" src="@/assets/dog.jpg" alt="">
   </div>
 
 
