@@ -3,7 +3,7 @@
 根据图片路径自动生成宽高和background-size
 
 ## Features
-- 🔥 根据动态生成width和heigth
+- 🔥 根据图片路径动态生成width和heigth
 - 🔥 结合presetAttributify获得良好的智能提示
 
 
@@ -70,11 +70,11 @@ declare module '@vue/runtime-dom' {
 
 - bg-dynamic 预览
 
-![alt text](image.png)
+![alt text](./image.png)
 
 - size-dynamic 预览
 
-![alt text](image-1.png)
+![alt text](./image-1.png)
 
 
 ## License
