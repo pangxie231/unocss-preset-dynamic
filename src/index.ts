@@ -45,7 +45,10 @@ function findAllImg(dir: string, imgs: string[]) {
       if (statSync(path.join(dir, file)).isDirectory()) {
         findAllImg(path.join(dir, file), imgs)
       } else {
-        imgs.push(path.join(dir, file))
+        // console.log('🚀 ~ findAllImg ~ path.extname(file):', path.extname(file))
+        if(/\.(jpg|png|gif)$/.test(file)) {
+          imgs.push(path.join(dir, file))
+        }
       }
 
     }
