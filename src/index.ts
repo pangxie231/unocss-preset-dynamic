@@ -9,6 +9,12 @@ export interface StarterOptions {
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 
+// eslint-disable-next-line node/prefer-global/process
+const isNode = typeof process !== 'undefined' && process.stdout && !process.versions.deno
+// eslint-disable-next-line node/prefer-global/process
+const isVSCode = isNode && !!process.env.VSCODE_CWD
+
+
 
 function findAssetsDirDown(dir: string): string | null {
   // 检查当前目录下是否存在 "assets" 文件夹
@@ -28,23 +34,40 @@ function findAssetsDirDown(dir: string): string | null {
   }
   return null;
 }
-
-const assetsDir = findAssetsDirDown(process.cwd());
-
 const imageSizes = new Map();
 
-if (assetsDir && statSync(assetsDir!).isDirectory()) {
-  const files = readdirSync(assetsDir!)
+// 递归assets，找到所有的 .png
+function findAllImg(dir: string, imgs: string[]) {
 
-  for (const file of files) {
-    const filePath = path.join(assetsDir!, file)
+  if (dir && statSync(dir).isDirectory()) {
+    const files = readdirSync(dir)
+    for (const file of files) {
+      if (statSync(path.join(dir, file)).isDirectory()) {
+        findAllImg(path.join(dir, file), imgs)
+      } else {
+        imgs.push(path.join(dir, file))
+      }
 
+    }
+  }
+
+  return imgs
+}
+
+if (!isVSCode) {
+  const assetsDir = findAssetsDirDown(process.cwd());
+  const imgs = findAllImg(assetsDir!, [])
+
+  console.log('🚀 ~ imgs:', imgs)
+
+  for (const filePath of imgs) {
     if (filePath && existsSync(filePath)) {
       const buffer = readFileSync(filePath)
       imageSizes.set(filePath.replace(/\\/g, '/'), imageSize(buffer))
     }
   }
 }
+
 console.log("🚀 ~ imageSizes:", imageSizes)
 
 
@@ -54,10 +77,7 @@ export interface DynamicAttributes {
   'size-dynamic'?: string
 }
 
-// eslint-disable-next-line node/prefer-global/process
-const isNode = typeof process !== 'undefined' && process.stdout && !process.versions.deno
-// eslint-disable-next-line node/prefer-global/process
-const isVSCode = isNode && !!process.env.VSCODE_CWD
+
 
 const bgDynamicRE = /^bg-dynamic-(.+)$/
 const sizeDynamicRE = /^size-dynamic-(.+)$/
@@ -77,8 +97,8 @@ export const presetDynamic = definePreset((_options: StarterOptions = {}) => {
         /^(bg|size)-dynamic-(.+)$/,
         (...args) => {
 
-        // console.log('🚀 ~ presetDynamic ~ imgPath:', args)
-        const [fullMatch, _, imgPath] = args[0]
+          // console.log('🚀 ~ presetDynamic ~ imgPath:', args)
+          const [fullMatch, _, imgPath] = args[0]
 
 
           let imgPath2: string = ''
