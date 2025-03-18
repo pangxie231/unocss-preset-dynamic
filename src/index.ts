@@ -78,7 +78,6 @@ export interface DynamicAttributes {
 }
 
 
-
 const bgDynamicRE = /^bg-dynamic-(.+)$/
 const sizeDynamicRE = /^size-dynamic-(.+)$/
 
