@@ -1,19 +1,37 @@
 import { createGenerator } from 'unocss'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { presetDynamic } from '../src'
 
-// it('presetStarter', async () => {
-//   const uno = await createGenerator({
-//     presets: [presetStarter()],
-//   })
-//   const presets = uno.config.presets
-//   expect(presets).toHaveLength(1)
 
-//   const { css } = await uno.generate('col-1 @active:col-2')
+vi.mock('node:fs', ()=> ({
+  existsSync: vi.fn(()=> true),
+  readFileSync: vi.fn(),
+}))
 
-//   expect(css).toMatchInlineSnapshot(`
-//     "/* layer: default */
-//     .\\@active\\:col-2.active{width:calc(2 / 12 * 100%);}
-//     .col-1{width:calc(1 / 12 * 100%);}"
-//   `)
-// })
+vi.mock('image-size', ()=> ({
+  imageSize: vi.fn(()=> ({
+    width: 100,
+    height: 100
+  }))
+}))
+
+it('presetStarter', async () => {
+  const uno = await createGenerator({
+    presets: [presetDynamic({
+      alias: {
+        '@': '/src'
+      }
+    })],
+  })
+  const presets = uno.config.presets
+  expect(presets).toHaveLength(1)
+
+  const { css } = await uno.generate('bg-dynamic-@/assets/images/dog.jpg size-dynamic-@/assets/images/dog.jpg')
+  console.log('css',css)
+
+  expect(css).toMatchInlineSnapshot(`
+    "/* layer: default */
+    .bg-dynamic-\\@\\/assets\\/images\\/dog\\.jpg{width:100px;height:100px;background-image:url(@/assets/images/dog.jpg);background-size:100px 100px;}
+    .size-dynamic-\\@\\/assets\\/images\\/dog\\.jpg{width:100px;height:100px;}"
+  `)
+})
